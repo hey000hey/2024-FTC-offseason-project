@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode;
-/*
+
 import static org.firstinspires.ftc.teamcode.MathFunctions.AngleWrap;
 
-public class RobotMovement {
-    public static void goToPosition (double x, double Y, double movementSpeed) {
+import com.qualcomm.robotcore.util.Range;
 
-        worldXPosition=50;
-        worldYPosition=140;
-        worldAngle_rad=Math.toRadians(-180);
+public class RobotMovement {
+    public static void goToPosition (double x, double Y, double movementSpeed, double preferredAngle, double turnSpeed) {
+
+        double worldXPosition=50;
+        double worldYPosition=140;
+        double worldAngle_rad = Math.toRadians(-180);
 
         //calculates the relative X and Y the bot has to move
         double distanceToTarget = Math.hypot(y-worldYPosition, x-worldXPosition);
@@ -19,6 +21,14 @@ public class RobotMovement {
         double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
 
         double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
+        double movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
+
+        // simulator
+        movement_x = movementXPower * movementSpeed;
+        movement_y = movementYPower * movementSpeed;
+
+        double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
+
+        movement_turn = Range.clip(relativeTurnAngle/Math.toRadians(30), -1, 1) * turnSpeed;
     }
 }
-*/
