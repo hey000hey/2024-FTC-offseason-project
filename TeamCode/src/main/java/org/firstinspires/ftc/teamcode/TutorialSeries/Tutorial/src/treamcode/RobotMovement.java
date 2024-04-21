@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode;
 
+import org.firstinspires.ftc.teamcode.MyOpMode;
+import org.firstinspires.ftc.teamcode.kinematics.*;
+
 import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.MathFunctions.AngleWrap;
 
 import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.com.company.ComputerDebugging;
@@ -45,8 +48,8 @@ public class RobotMovement {
             double closestAngle = 100000000;
 
             for(Point thisIntersection : intersections) {
-                double angle = Math.atan2(thisIntersection.y - worldYPosition, thisIntersection.x - worldXPosition);
-                double deltaAngle = Math.abs(MathFunctions.AngleWrap(angle - worldAngle_rad));
+                double angle = Math.atan2(thisIntersection.y - MyOpMode.BotYPosition, thisIntersection.x - MyOpMode.BotXPosition);
+                double deltaAngle = Math.abs(MathFunctions.AngleWrap(angle - MyOpMode.BotHeading));
                 System.out.println("Delta angle " + deltaAngle);
                 System.out.println("deltaAngle");
 
@@ -67,11 +70,13 @@ public class RobotMovement {
 
     public static void goToPosition (double x, double Y, double movementSpeed, double preferredAngle, double turnSpeed) {
 
-        //calculates the relative X and Y the bot has to move
-        double distanceToTarget = Math.hypot(Y-worldYPosition, x-worldXPosition);
 
-        double absoluteAngleToTarget = Math.atan2(Y-worldYPosition, x-worldXPosition);
-        double relativeAngleToPoint = AngleWrap(absoluteAngleToTarget - (worldAngle_rad - Math.toRadians(90)));
+
+        //calculates the relative X and Y the bot has to move
+        double distanceToTarget = Math.hypot(Y-MyOpMode.BotYPosition, x-MyOpMode.BotXPosition);
+
+        double absoluteAngleToTarget = Math.atan2(Y-MyOpMode.BotYPosition, x-MyOpMode.BotXPosition);
+        double relativeAngleToPoint = AngleWrap(absoluteAngleToTarget - (MyOpMode.BotHeading - Math.toRadians(90)));
 
         double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
         double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
@@ -79,9 +84,6 @@ public class RobotMovement {
         double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
         double movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
-        // simulator
-        movement_x = movementXPower * movementSpeed;
-        movement_y = movementYPower * movementSpeed;
 
         double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
 

@@ -21,7 +21,17 @@ public class Main {
         //this is a test of the coding
         ComputerDebugging computerDebugging = new ComputerDebugging();
         Robot robot = new Robot();
-        OpMode opMode = new MyOpMode();
+        OpMode opMode = new OpMode() {
+            @Override
+            public void init() {
+
+            }
+
+            @Override
+            public void loop() {
+
+            }
+        };
         opMode.init();
 
         ComputerDebugging.clearLogPoints();
