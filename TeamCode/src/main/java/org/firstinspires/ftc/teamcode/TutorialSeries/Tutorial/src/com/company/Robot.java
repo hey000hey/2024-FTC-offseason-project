@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.com.company;
 
 import RobotUtilities.MovementVars;
-import RobotUtilities.SpeedOmeter;
+// import RobotUtilities.SpeedOmeter;
 
 public class Robot {
     public static boolean usingComputer = true;
