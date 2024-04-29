@@ -8,7 +8,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.RobotMovement.followCurve;
 
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
@@ -20,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous
-public class MyOpMode extends LinearOpMode {
+public class OdomTesting extends LinearOpMode {
 
 
     // The lateral distance between the left and right odometers
@@ -39,6 +38,7 @@ public class MyOpMode extends LinearOpMode {
     // if needed, one can add a gearing term here
     public static final double TICKS_PER_REV = 8192;
 
+//    public static final double TICKS_TO_INCHES = 736.028;
     public static final double TICKS_TO_INCHES = 0.0005752428;
 
     public static double BotXPosition;
@@ -77,63 +77,25 @@ public class MyOpMode extends LinearOpMode {
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
 
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(0, 11, 0.1, 1.0, 50, Math.toRadians(50), 1.0 ));
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(0, 20, 0.1, 1.0, 50, Math.toRadians(50), 1.0 ));
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(0, 30, 0.1, 1.0, 50, Math.toRadians(50), 1.0 ));
-
-
-        org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint secondLastPoint = allPoints.get(allPoints.size() - 2);
-        org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint lastPoint = allPoints.get(allPoints.size() - 1);
-        double m = (lastPoint.y - secondLastPoint.y) / (lastPoint.x - secondLastPoint.x);
-
-        org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint extend = lastPoint;
-        if ((secondLastPoint.x - lastPoint.x) < 0) {
-            extend.x += 30;
-            extend.y += ((m * extend.x) + (m * lastPoint.x));
-        } else if ((secondLastPoint.x - lastPoint.x) > 0 ) {
-            extend.x -= 30;
-            extend.y += ((m * extend.x) + (m * lastPoint.x));
-        } else if ((secondLastPoint.y - lastPoint.y) < 0) {
-            extend.y += 30;
-        } else {
-            extend.y -= 30;
-        }
-
-        allPoints.add(extend);
-        // print the last point
-//        System.out.println("LAST POINT.x: " + allPoints.get(-1).x);
-//        System.out.println("LAST POINT.y: " + allPoints.get(-1).y);
+        DecimalFormat df = new DecimalFormat("#.#####");
 
         waitForStart();
-
-        DecimalFormat df = new DecimalFormat("#.#####");
 
         // Add main loop code here
         System.out.println("Initialized");
 
-//        new Thread(() -> {
-            while (opModeIsActive() && !isStopRequested()) {
-                odometry.updatePose(); // update the position
-                PositionTracker.robotPose = odometry.getPose();
-                BotXPosition = PositionTracker.robotPose.getX();
-                BotYPosition = PositionTracker.robotPose.getY();
-                BotHeading = PositionTracker.robotPose.getHeading();
-                telemetry.addData("X Position", df.format(BotXPosition));
-                telemetry.addData("Y Position",df.format(BotYPosition));
-                telemetry.addData("Heading", df.format(BotHeading));
+        while (opModeIsActive() && !isStopRequested()) {
+            odometry.updatePose(); // update the position
+            PositionTracker.robotPose = odometry.getPose();
+            BotXPosition = PositionTracker.robotPose.getX();
+            BotYPosition = PositionTracker.robotPose.getY();
+            BotHeading = PositionTracker.robotPose.getHeading();
+            telemetry.addData("X Position", df.format(BotXPosition));
+            telemetry.addData("Y Position", df.format(BotYPosition));
+            telemetry.addData("Heading", df.format(BotHeading));
 
-                telemetry.addData ("relative turn angle: ", followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive));
-                telemetry.update();
-
-            }
-//        }).start();
-
-//        new Thread(() -> {
-//            while (opModeIsActive() && !isStopRequested()) {
-//           telemetry.addData ("relative turn angle: ", followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive));
-//           telemetry.update();
-//          }
-//        }).start();
+            telemetry.update();
+        }
 
     }
 }

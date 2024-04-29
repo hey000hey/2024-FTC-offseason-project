@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MyOpMode;
-import org.firstinspires.ftc.teamcode.kinematics.*;
+import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.MathFunctions.AngleWrap;
 
 import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.com.company.ComputerDebugging;
@@ -16,16 +18,18 @@ import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.com.com
 import static RobotUtilities.MovementVars.*;
 import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.MathFunctions.lineCircleIntersection;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 
 public class RobotMovement {
 
 
-    public static void followCurve(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints, double followAngle) {
-//        CurvePoint followMe = getFollowPointPath(allPoints, new Point(worldXPosition,worldYPosition), allPoints.get(0).followDistance);
-
-//        if(!((worldXPosition - allPoints.get(allPoints.size() - 2).x) < 0.1) || !((worldYPosition - allPoints.get(allPoints.size() - 2).y) < 0.1)) {
-//            goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed);
-//        }
+    public static double followCurve(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints, double followAngle, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive) {
+        CurvePoint followMe = getFollowPointPath(allPoints, new Point(MyOpMode.BotXPosition,MyOpMode.BotYPosition), allPoints.get(0).followDistance);
+// checks if the bot is very close to the last point
+        if(!((MyOpMode.BotXPosition - allPoints.get(allPoints.size() - 2).x) < 0.1) || !((MyOpMode.BotYPosition - allPoints.get(allPoints.size() - 2).y) < 0.1)) {
+            return goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed, LeftFrontDrive, RightFrontDrive, LeftFrontDrive, RightBackDrive);
+        } else return 0;
     }
 
     public static CurvePoint getFollowPointPath(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> pathPoints, Point robotLocation, double followRadius) {
@@ -68,7 +72,7 @@ public class RobotMovement {
     }
 
 
-    public static void goToPosition (double x, double Y, double movementSpeed, double preferredAngle, double turnSpeed) {
+    public static double goToPosition (double x, double Y, double movementSpeed, double preferredAngle, double turnSpeed, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive) {
 
 
 
@@ -88,6 +92,15 @@ public class RobotMovement {
         double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
 
         movement_turn = Range.clip(relativeTurnAngle/Math.toRadians(30), -1, 1) * turnSpeed;
+
+//        if (relativeTurnAngle > 0.1) {
+//            LeftBackDrive
+//        }
+
+        telemetry.addData("inside go to position: bot x", MyOpMode.BotXPosition);
+        telemetry.update();
+
+        return relativeTurnAngle;
     }
 
 

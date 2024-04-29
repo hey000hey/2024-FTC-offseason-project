@@ -173,10 +173,17 @@ public class MotorTesting extends LinearOpMode {
 
 
 
+
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+            telemetry.addData("right odom: ", leftBackDrive.getCurrentPosition());
+            telemetry.addData("left odom: ", leftFrontDrive.getCurrentPosition());
+            telemetry.addData("perpendicular odom: ", rightBackDrive.getCurrentPosition());
             telemetry.update();
+
+
         }
     }}
