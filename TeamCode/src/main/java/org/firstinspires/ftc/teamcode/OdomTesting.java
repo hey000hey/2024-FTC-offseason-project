@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.OpMode;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 
 import java.text.DecimalFormat;
@@ -18,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Config
 @Autonomous
 public class OdomTesting extends LinearOpMode {
 
@@ -25,21 +28,21 @@ public class OdomTesting extends LinearOpMode {
     // The lateral distance between the left and right odometers
     // is called the trackwidth. This is very important for
     // determining angle for turning approximations
-    public static final double TRACKWIDTH = 12;
+    public static double TRACKWIDTH = 12;
 
     // Center wheel offset is the distance between the
     // center of rotation of the robot and the center odometer.
     // This is to correct for the error that might occur when turning.
     // A negative offset means the odometer is closer to the back,
     // while a positive offset means it is closer to the front.
-    public static final double CENTER_WHEEL_OFFSET = 5;
+    public static double CENTER_WHEEL_OFFSET = 5;
 
-    public static final double WHEEL_DIAMETER = 1.5;
+    public static double WHEEL_DIAMETER = 1.5;
     // if needed, one can add a gearing term here
-    public static final double TICKS_PER_REV = 8192;
+    public static double TICKS_PER_REV = 8192;
 
 //    public static final double TICKS_TO_INCHES = 736.028;
-    public static final double TICKS_TO_INCHES = 0.0005752428;
+    public static double TICKS_TO_INCHES = 0.0005752428;
 
     public static double BotXPosition;
     public static double BotYPosition;
