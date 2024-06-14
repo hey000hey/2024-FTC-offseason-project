@@ -56,9 +56,9 @@ public class MyOpMode extends LinearOpMode {
         System.out.println("Initializing MyOpMode...");
 
         MotorEx encoderLeft, encoderRight, encoderPerp;
-        encoderLeft = new MotorEx(hardwareMap, "left_front");
-        encoderRight = new MotorEx(hardwareMap, "left_back");
-        encoderPerp = new MotorEx(hardwareMap, "right_back");
+        encoderLeft = new MotorEx(hardwareMap, "right_back");
+        encoderRight = new MotorEx(hardwareMap, "right_back");
+        encoderPerp = new MotorEx(hardwareMap, "left_front");
 
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back");
@@ -122,7 +122,9 @@ public class MyOpMode extends LinearOpMode {
                 telemetry.addData("Y Position",df.format(BotYPosition));
                 telemetry.addData("Heading", df.format(BotHeading));
 
-                telemetry.addData ("relative turn angle: ", followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive));
+                followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
+
+//                telemetry.addData ("relative turn angle: ", followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive));
                 telemetry.update();
 
             }

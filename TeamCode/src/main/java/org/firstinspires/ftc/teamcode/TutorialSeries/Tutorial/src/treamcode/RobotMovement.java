@@ -88,6 +88,16 @@ public class RobotMovement {
         double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
         double movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
+        LeftFrontDrive.setPower(movementXPower);
+        LeftBackDrive.setPower(movementXPower);
+        RightFrontDrive.setPower(movementYPower);
+        RightBackDrive.setPower(movementYPower);
+
+        telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
+        telemetry.addData("lb motor power: ", LeftFrontDrive.getPower());
+        telemetry.addData("rf motor power: ", LeftFrontDrive.getPower());
+        telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
+
 
         double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
 
