@@ -140,6 +140,8 @@ public class RobotMovement {
             //when max power is multiplied by this ratio, it will be 1.0, and others less
             scaleDownAmount = 1.0/maxRawPower;
         }
+
+        //double scaleDownAmount = Math.max(Math.abs(lf_power_raw), Math.abs(lb_power_raw), Math.abs(rb_power_raw), Math.abs(rf_power_raw), 1);
         lf_power_raw *= scaleDownAmount;
         lb_power_raw *= scaleDownAmount;
         rb_power_raw *= scaleDownAmount;
