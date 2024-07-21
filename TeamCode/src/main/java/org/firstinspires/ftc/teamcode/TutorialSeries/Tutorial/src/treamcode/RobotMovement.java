@@ -85,19 +85,22 @@ public class RobotMovement {
         double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
         double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
 
-        double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-        double movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
-        LeftFrontDrive.setPower(movementXPower);
-        LeftBackDrive.setPower(movementXPower);
-        RightFrontDrive.setPower(movementYPower);
-        RightBackDrive.setPower(movementYPower);
+        // vedant/maxwell movement code
+//        double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
+//        double movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
+//
+//        LeftFrontDrive.setPower(movementXPower);
+//        LeftBackDrive.setPower(movementXPower);
+//        RightFrontDrive.setPower(movementYPower);
+//        RightBackDrive.setPower(movementYPower);
+//
+        ApplyMovement();
 
         telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
         telemetry.addData("lb motor power: ", LeftFrontDrive.getPower());
         telemetry.addData("rf motor power: ", LeftFrontDrive.getPower());
         telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
-
 
         double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
 
@@ -113,5 +116,41 @@ public class RobotMovement {
         return relativeTurnAngle;
     }
 
+    //gluten free movement code
+    /*converts movement_y, movement_x, movement_turn into motor powers */
+    public static void ApplyMovement() {
+
+        double lf_power_raw = movement_y-movement_turn+movement_x*1.5;
+        double lb_power_raw = movement_y-movement_turn- movement_x*1.5;
+        double rb_power_raw = -movement_y-movement_turn-movement_x*1.5;
+        double rf_power_raw = -movement_y-movement_turn+movement_x*1.5;
+
+
+
+
+        //find the maximum of the powers
+        double maxRawPower = Math.abs(lf_power_raw);
+        if(Math.abs(lb_power_raw) > maxRawPower){ maxRawPower = Math.abs(lb_power_raw);}
+        if(Math.abs(rb_power_raw) > maxRawPower){ maxRawPower = Math.abs(rb_power_raw);}
+        if(Math.abs(rf_power_raw) > maxRawPower){ maxRawPower = Math.abs(rf_power_raw);}
+
+        //if the maximum is greater than 1, scale all the powers down to preserve the shape
+        double scaleDownAmount = 1.0;
+        if(maxRawPower > 1.0){
+            //when max power is multiplied by this ratio, it will be 1.0, and others less
+            scaleDownAmount = 1.0/maxRawPower;
+        }
+        lf_power_raw *= scaleDownAmount;
+        lb_power_raw *= scaleDownAmount;
+        rb_power_raw *= scaleDownAmount;
+        rf_power_raw *= scaleDownAmount;
+
+
+        //now we can set the powers ONLY IF THEY HAVE CHANGED TO AVOID SPAMMING USB COMMUNICATIONS (idk how they do that -alan)
+        LeftFrontDrive.setPower(lf_power_raw);
+        LeftBackDrive.setPower(lb_power_raw);
+        RightBackDrive.setPower(rf_power_raw);
+        RightFrontDrive.setPower(rf_power_raw);
+    }
 
 }
