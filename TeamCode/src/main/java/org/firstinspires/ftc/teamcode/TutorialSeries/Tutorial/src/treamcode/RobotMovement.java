@@ -19,6 +19,7 @@ import static RobotUtilities.MovementVars.*;
 import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.MathFunctions.lineCircleIntersection;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 public class RobotMovement {
@@ -28,7 +29,7 @@ public class RobotMovement {
         CurvePoint followMe = getFollowPointPath(allPoints, new Point(MyOpMode.BotXPosition,MyOpMode.BotYPosition), allPoints.get(0).followDistance);
 // checks if the bot is very close to the last point
         if(!((MyOpMode.BotXPosition - allPoints.get(allPoints.size() - 2).x) < 0.1) || !((MyOpMode.BotYPosition - allPoints.get(allPoints.size() - 2).y) < 0.1)) {
-            return goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed, LeftFrontDrive, RightFrontDrive, LeftFrontDrive, RightBackDrive);
+            return goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed, LeftFrontDrive, RightFrontDrive, LeftBackDrive, RightBackDrive);
         } else return 0;
     }
 
@@ -100,21 +101,29 @@ public class RobotMovement {
 
         movement_turn = Range.clip(relativeTurnAngle/Math.toRadians(30), -1, 1) * turnSpeed;
 
-//        double tl_power_raw = movement_y-movement_turn+movement_x*1.5;
-//        double bl_power_raw = movement_y-movement_turn- movement_x*1.5;
-//        double br_power_raw = -movement_y-movement_turn-movement_x*1.5;
-//        double tr_power_raw = -movement_y-movement_turn+movement_x*1.5;
+//        double tl_power_raw = movementYPower-movement_turn+movementXPower*1.5;
+//        double bl_power_raw = movementYPower-movement_turn- movementXPower*1.5;
+//        double br_power_raw = -movementYPower-movement_turn-movementXPower*1.5;
+//        double tr_power_raw = -movementYPower-movement_turn+movementXPower*1.5;
 
-//        LeftFrontDrive.setPower(tl_power_raw);
-//        LeftBackDrive.setPower(bl_power_raw);
-//        RightFrontDrive.setPower(br_power_raw);
-//        RightBackDrive.setPower(tr_power_raw);
+        double tl_power_raw = movementYPower-movement_turn+movementXPower;
+        double bl_power_raw = movementYPower-movement_turn- movementXPower;
+        double br_power_raw = -movementYPower-movement_turn-movementXPower;
+        double tr_power_raw = -movementYPower-movement_turn+movementXPower;
+
+        LeftFrontDrive.setPower(tl_power_raw);
+        LeftBackDrive.setPower(bl_power_raw);
+        RightFrontDrive.setPower(br_power_raw);
+        RightBackDrive.setPower(tr_power_raw);
+
+//        LeftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+//        RightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // hardcode test
-        LeftFrontDrive.setPower(1);
-        LeftBackDrive.setPower(1);
-        RightFrontDrive.setPower(1);
-        RightBackDrive.setPower(1);
+//        LeftFrontDrive.setPower(1);
+//        LeftBackDrive.setPower(1);
+//        RightFrontDrive.setPower(1);
+//        RightBackDrive.setPower(1);
 
 //        telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
 //        telemetry.addData("lb motor power: ", LeftFrontDrive.getPower());

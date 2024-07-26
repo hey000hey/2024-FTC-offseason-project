@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous
 public class MotorMap extends LinearOpMode {
@@ -21,12 +22,15 @@ public class MotorMap extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
 
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
         waitForStart();
 
-        leftFrontDrive.setPower(-1);
+        leftFrontDrive.setPower(1);
         leftBackDrive.setPower(1);
         rightFrontDrive.setPower(1);
-        rightBackDrive.setPower(-1);
+        rightBackDrive.setPower(1);
 
         sleep(3000);
 

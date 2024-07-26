@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.OpMode;
+
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.kinematics.DifferentialOdometry;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 
 import java.text.DecimalFormat;
@@ -18,6 +21,7 @@ import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous
 public class MyOpMode extends LinearOpMode {
@@ -55,31 +59,27 @@ public class MyOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         System.out.println("Initializing MyOpMode...");
 
-        MotorEx encoderLeft, encoderRight, encoderPerp;
-        encoderLeft = new MotorEx(hardwareMap, "right_back");
+        MotorEx encoderLeft, encoderRight;
+        encoderLeft = new MotorEx(hardwareMap, "left_front"); // parallel
         encoderRight = new MotorEx(hardwareMap, "right_back");
-        encoderPerp = new MotorEx(hardwareMap, "left_front");
 
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
 
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        encoderLeft.setDistancePerPulse(TICKS_TO_INCHES);
-        encoderRight.setDistancePerPulse(TICKS_TO_INCHES);
-        encoderPerp.setDistancePerPulse(TICKS_TO_INCHES);
-
-        HolonomicOdometry odometry = new HolonomicOdometry(
-                encoderLeft::getDistance,
-                encoderRight::getDistance,
-                encoderPerp::getDistance,
-                TRACKWIDTH, CENTER_WHEEL_OFFSET
+        DifferentialOdometry diffOdom = new DifferentialOdometry(
+                () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
+                () -> encoderRight.getCurrentPosition() * TICKS_TO_INCHES,
+                TRACKWIDTH
         );
 
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(0, 11, 0.1, 1.0, 50, Math.toRadians(50), 1.0 ));
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(0, 20, 0.1, 1.0, 50, Math.toRadians(50), 1.0 ));
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(0, 30, 0.1, 1.0, 50, Math.toRadians(50), 1.0 ));
+        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(10, 0, 0.1, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(25, 0, 0.1, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(60, 0, 0.1, 1.0, 5, Math.toRadians(50), 1.0 ));
 
 
         org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint secondLastPoint = allPoints.get(allPoints.size() - 2);
@@ -104,6 +104,8 @@ public class MyOpMode extends LinearOpMode {
 //        System.out.println("LAST POINT.x: " + allPoints.get(-1).x);
 //        System.out.println("LAST POINT.y: " + allPoints.get(-1).y);
 
+        diffOdom.updatePose(new Pose2d());
+
         waitForStart();
 
         DecimalFormat df = new DecimalFormat("#.#####");
@@ -113,8 +115,8 @@ public class MyOpMode extends LinearOpMode {
 
 //        new Thread(() -> {
             while (opModeIsActive() && !isStopRequested()) {
-                odometry.updatePose(); // update the position
-                PositionTracker.robotPose = odometry.getPose();
+                diffOdom.updatePose(); // update the position
+                PositionTracker.robotPose = diffOdom.getPose();
                 BotXPosition = PositionTracker.robotPose.getX();
                 BotYPosition = PositionTracker.robotPose.getY();
                 BotHeading = PositionTracker.robotPose.getHeading();
