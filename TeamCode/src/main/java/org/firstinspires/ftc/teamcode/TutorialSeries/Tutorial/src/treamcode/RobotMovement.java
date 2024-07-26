@@ -87,31 +87,50 @@ public class RobotMovement {
 
 
         // vedant/maxwell movement code
-//        double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-//        double movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
+        double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
+        double movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 //
 //        LeftFrontDrive.setPower(movementXPower);
 //        LeftBackDrive.setPower(movementXPower);
 //        RightFrontDrive.setPower(movementYPower);
 //        RightBackDrive.setPower(movementYPower);
 //
-        ApplyMovement();
-
-        telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
-        telemetry.addData("lb motor power: ", LeftFrontDrive.getPower());
-        telemetry.addData("rf motor power: ", LeftFrontDrive.getPower());
-        telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
-
+//        ApplyMovement();
         double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
 
         movement_turn = Range.clip(relativeTurnAngle/Math.toRadians(30), -1, 1) * turnSpeed;
+
+//        double tl_power_raw = movement_y-movement_turn+movement_x*1.5;
+//        double bl_power_raw = movement_y-movement_turn- movement_x*1.5;
+//        double br_power_raw = -movement_y-movement_turn-movement_x*1.5;
+//        double tr_power_raw = -movement_y-movement_turn+movement_x*1.5;
+
+//        LeftFrontDrive.setPower(tl_power_raw);
+//        LeftBackDrive.setPower(bl_power_raw);
+//        RightFrontDrive.setPower(br_power_raw);
+//        RightBackDrive.setPower(tr_power_raw);
+
+        // hardcode test
+        LeftFrontDrive.setPower(1);
+        LeftBackDrive.setPower(1);
+        RightFrontDrive.setPower(1);
+        RightBackDrive.setPower(1);
+
+//        telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
+//        telemetry.addData("lb motor power: ", LeftFrontDrive.getPower());
+//        telemetry.addData("rf motor power: ", LeftFrontDrive.getPower());
+//        telemetry.addData("lf motor power: ", LeftFrontDrive.getPower());
+
+//        double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
+
+//        movement_turn = Range.clip(relativeTurnAngle/Math.toRadians(30), -1, 1) * turnSpeed;
 
 //        if (relativeTurnAngle > 0.1) {
 //            LeftBackDrive
 //        }
 
-        telemetry.addData("inside go to position: bot x", MyOpMode.BotXPosition);
-        telemetry.update();
+//        telemetry.addData("inside go to position: bot x", MyOpMode.BotXPosition);
+//        telemetry.update();
 
         return relativeTurnAngle;
     }
@@ -149,10 +168,10 @@ public class RobotMovement {
 
 
         //now we can set the powers ONLY IF THEY HAVE CHANGED TO AVOID SPAMMING USB COMMUNICATIONS (idk how they do that -alan)
-        LeftFrontDrive.setPower(lf_power_raw);
-        LeftBackDrive.setPower(lb_power_raw);
-        RightBackDrive.setPower(rf_power_raw);
-        RightFrontDrive.setPower(rf_power_raw);
+//        LeftFrontDrive.setPower(lf_power_raw);
+//        LeftBackDrive.setPower(lb_power_raw);
+//        RightBackDrive.setPower(rf_power_raw);
+//        RightFrontDrive.setPower(rf_power_raw);
     }
 
 }
