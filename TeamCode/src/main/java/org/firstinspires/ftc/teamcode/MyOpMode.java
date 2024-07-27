@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.OpMode;
+import org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer;
 
+import com.acmerobotics.dashboard.canvas.Rotation;
 import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.kinematics.DifferentialOdometry;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.RobotMovement.followCurve;
+import static org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer.getPose;
 
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
@@ -22,6 +26,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 @Autonomous
 public class MyOpMode extends LinearOpMode {
@@ -54,6 +60,9 @@ public class MyOpMode extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+    // unfinished
+    TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(, 0.0005752428, 0.0005752428);
+
     ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints = new ArrayList<>();
     @Override
     public void runOpMode() throws InterruptedException {
@@ -77,9 +86,8 @@ public class MyOpMode extends LinearOpMode {
                 TRACKWIDTH
         );
 
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(10, 0, 0.1, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(25, 0, 0.1, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(60, 0, 0.1, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(0, 10, 0, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(10, 20, 0, 1.0, 5, Math.toRadians(50), 1.0 ));
 
 
         org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint secondLastPoint = allPoints.get(allPoints.size() - 2);
@@ -104,7 +112,10 @@ public class MyOpMode extends LinearOpMode {
 //        System.out.println("LAST POINT.x: " + allPoints.get(-1).x);
 //        System.out.println("LAST POINT.y: " + allPoints.get(-1).y);
 
-        diffOdom.updatePose(new Pose2d());
+        encoderLeft.encoder.reset();
+        encoderRight.encoder.reset();
+
+        diffOdom.updatePose(new Pose2d(1, 2, Rotation2d.fromDegrees(0)));
 
         waitForStart();
 
@@ -117,8 +128,8 @@ public class MyOpMode extends LinearOpMode {
             while (opModeIsActive() && !isStopRequested()) {
                 diffOdom.updatePose(); // update the position
                 PositionTracker.robotPose = diffOdom.getPose();
-                BotXPosition = PositionTracker.robotPose.getX();
-                BotYPosition = PositionTracker.robotPose.getY();
+                BotXPosition = TwoDeadWheelLocalizer.getPose().position.x + 1;
+                BotYPosition = getPose().position.y + 1;
                 BotHeading = PositionTracker.robotPose.getHeading();
                 telemetry.addData("X Position", df.format(BotXPosition));
                 telemetry.addData("Y Position",df.format(BotYPosition));
