@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint;
 import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.OpMode;
 import org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.RobotMovement.followCurve;
-import static org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer.getPose;
+//import static org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer.getPose;
 
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
@@ -60,17 +61,19 @@ public class MyOpMode extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
-    // unfinished
-    TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(, 0.0005752428, 0.0005752428);
-
-    ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints = new ArrayList<>();
+    ArrayList<CurvePoint> allPoints = new ArrayList<>();
     @Override
     public void runOpMode() throws InterruptedException {
+        IMU imu;
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(hardwareMap, imu, 0.0005752428, 0.0005752428);
+
         System.out.println("Initializing MyOpMode...");
 
-        MotorEx encoderLeft, encoderRight;
-        encoderLeft = new MotorEx(hardwareMap, "left_front"); // parallel
-        encoderRight = new MotorEx(hardwareMap, "right_back");
+//        MotorEx encoderLeft, encoderRight;
+//        encoderLeft = new MotorEx(hardwareMap, "left_front"); // parallel
+//        encoderRight = new MotorEx(hardwareMap, "right_back");
 
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back");
@@ -80,21 +83,22 @@ public class MyOpMode extends LinearOpMode {
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        DifferentialOdometry diffOdom = new DifferentialOdometry(
-                () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
-                () -> encoderRight.getCurrentPosition() * TICKS_TO_INCHES,
-                TRACKWIDTH
-        );
+//        DifferentialOdometry diffOdom = new DifferentialOdometry(
+//                () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
+//                () -> encoderRight.getCurrentPosition() * TICKS_TO_INCHES,
+//                TRACKWIDTH
+//        );
 
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(0, 10, 0, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint(10, 20, 0, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(10, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(20, 10, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(30, 20, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
 
 
-        org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint secondLastPoint = allPoints.get(allPoints.size() - 2);
-        org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint lastPoint = allPoints.get(allPoints.size() - 1);
+        CurvePoint secondLastPoint = allPoints.get(allPoints.size() - 2);
+        CurvePoint lastPoint = allPoints.get(allPoints.size() - 1);
         double m = (lastPoint.y - secondLastPoint.y) / (lastPoint.x - secondLastPoint.x);
 
-        org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint extend = lastPoint;
+        CurvePoint extend = lastPoint;
         if ((secondLastPoint.x - lastPoint.x) < 0) {
             extend.x += 30;
             extend.y += ((m * extend.x) + (m * lastPoint.x));
@@ -112,10 +116,10 @@ public class MyOpMode extends LinearOpMode {
 //        System.out.println("LAST POINT.x: " + allPoints.get(-1).x);
 //        System.out.println("LAST POINT.y: " + allPoints.get(-1).y);
 
-        encoderLeft.encoder.reset();
-        encoderRight.encoder.reset();
+//        encoderLeft.encoder.reset();
+//        encoderRight.encoder.reset();
 
-        diffOdom.updatePose(new Pose2d(1, 2, Rotation2d.fromDegrees(0)));
+//        diffOdom.updatePose(new Pose2d(1, 2, Rotation2d.fromDegrees(0)));
 
         waitForStart();
 
@@ -124,13 +128,15 @@ public class MyOpMode extends LinearOpMode {
         // Add main loop code here
         System.out.println("Initialized");
 
+//        telemetry.addData()
+
 //        new Thread(() -> {
             while (opModeIsActive() && !isStopRequested()) {
-                diffOdom.updatePose(); // update the position
-                PositionTracker.robotPose = diffOdom.getPose();
-                BotXPosition = TwoDeadWheelLocalizer.getPose().position.x + 1;
-                BotYPosition = getPose().position.y + 1;
-                BotHeading = PositionTracker.robotPose.getHeading();
+//                diffOdom.updatePose(); // update the position
+//                PositionTracker.robotPose = diffOdom.getPose();
+                BotXPosition = tdwl.getPose().position.x + 1;
+                BotYPosition = tdwl.getPose().position.y + 1;
+                BotHeading = tdwl.getPose().heading.toDouble();
                 telemetry.addData("X Position", df.format(BotXPosition));
                 telemetry.addData("Y Position",df.format(BotYPosition));
                 telemetry.addData("Heading", df.format(BotHeading));
@@ -138,7 +144,7 @@ public class MyOpMode extends LinearOpMode {
                 followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
 
 //                telemetry.addData ("relative turn angle: ", followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive));
-                telemetry.update();
+
 
             }
 //        }).start();

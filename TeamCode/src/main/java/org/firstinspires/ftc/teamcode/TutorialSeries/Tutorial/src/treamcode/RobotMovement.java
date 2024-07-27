@@ -28,9 +28,9 @@ public class RobotMovement {
     public static double followCurve(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints, double followAngle, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive) {
         CurvePoint followMe = getFollowPointPath(allPoints, new Point(MyOpMode.BotXPosition,MyOpMode.BotYPosition), allPoints.get(0).followDistance);
 // checks if the bot is very close to the last point
-        if(!((MyOpMode.BotXPosition - allPoints.get(allPoints.size() - 2).x) < 0.1) || !((MyOpMode.BotYPosition - allPoints.get(allPoints.size() - 2).y) < 0.1)) {
+//        if(!((MyOpMode.BotXPosition - allPoints.get(allPoints.size() - 2).x) < 0.1) || !((MyOpMode.BotYPosition - allPoints.get(allPoints.size() - 2).y) < 0.1)) {
             return goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed, LeftFrontDrive, RightFrontDrive, LeftBackDrive, RightBackDrive);
-        } else return 0;
+//        } else return 0;
     }
 
     public static CurvePoint getFollowPointPath(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> pathPoints, Point robotLocation, double followRadius) {
@@ -110,6 +110,12 @@ public class RobotMovement {
         double bl_power_raw = movementYPower-movement_turn- movementXPower;
         double br_power_raw = -movementYPower-movement_turn-movementXPower;
         double tr_power_raw = -movementYPower-movement_turn+movementXPower;
+
+        telemetry.addData("movement y power", movementYPower);
+        telemetry.addData("movement turn", movement_turn);
+        telemetry.addData("movement X power", movementXPower);
+
+        telemetry.update();
 
         LeftFrontDrive.setPower(tl_power_raw);
         LeftBackDrive.setPower(bl_power_raw);
