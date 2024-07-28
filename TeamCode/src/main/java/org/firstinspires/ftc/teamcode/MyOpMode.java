@@ -89,9 +89,9 @@ public class MyOpMode extends LinearOpMode {
 //                TRACKWIDTH
 //        );
 
-        allPoints.add(new CurvePoint(10, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new CurvePoint(20, 10, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new CurvePoint(30, 20, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(40, 10, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(50, 50, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
 
 
         CurvePoint secondLastPoint = allPoints.get(allPoints.size() - 2);
@@ -128,7 +128,7 @@ public class MyOpMode extends LinearOpMode {
         // Add main loop code here
         System.out.println("Initialized");
 
-//        telemetry.addData()
+
 
 //        new Thread(() -> {
             while (opModeIsActive() && !isStopRequested()) {
@@ -140,6 +140,7 @@ public class MyOpMode extends LinearOpMode {
                 telemetry.addData("X Position", df.format(BotXPosition));
                 telemetry.addData("Y Position",df.format(BotYPosition));
                 telemetry.addData("Heading", df.format(BotHeading));
+                telemetry.update();
 
                 followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
 

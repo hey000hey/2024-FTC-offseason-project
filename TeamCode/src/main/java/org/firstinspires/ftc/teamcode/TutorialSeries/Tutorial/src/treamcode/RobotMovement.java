@@ -111,11 +111,11 @@ public class RobotMovement {
         double br_power_raw = -movementYPower-movement_turn-movementXPower;
         double tr_power_raw = -movementYPower-movement_turn+movementXPower;
 
-        telemetry.addData("movement y power", movementYPower);
-        telemetry.addData("movement turn", movement_turn);
-        telemetry.addData("movement X power", movementXPower);
-
-        telemetry.update();
+//        telemetry.addData("movement y power", movementYPower);
+//        telemetry.addData("movement turn", movement_turn);
+//        telemetry.addData("movement X power", movementXPower);
+//
+//        telemetry.update();
 
         LeftFrontDrive.setPower(tl_power_raw);
         LeftBackDrive.setPower(bl_power_raw);
