@@ -88,8 +88,10 @@ public class RobotMovement {
 
 
         // vedant/maxwell movement code
-        double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-        double movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
+        double movementXPower = 0.001;
+        double movementYPower = 0.001;
+        movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
+        movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 //
 //        LeftFrontDrive.setPower(movementXPower);
 //        LeftBackDrive.setPower(movementXPower);
@@ -111,10 +113,10 @@ public class RobotMovement {
         double br_power_raw = -movementYPower-movement_turn-movementXPower;
         double tr_power_raw = -movementYPower-movement_turn+movementXPower;
 
-//        telemetry.addData("movement y power", movementYPower);
-//        telemetry.addData("movement turn", movement_turn);
-//        telemetry.addData("movement X power", movementXPower);
-//
+       // telemetry.addData("movement y power", movementYPower);
+        //telemetry.addData("movement turn", movement_turn);
+       // telemetry.addData("movement X power", movementXPower);
+
 //        telemetry.update();
 
         LeftFrontDrive.setPower(tl_power_raw);
@@ -158,6 +160,7 @@ public class RobotMovement {
         double lb_power_raw = movement_y-movement_turn- movement_x*1.5;
         double rb_power_raw = -movement_y-movement_turn-movement_x*1.5;
         double rf_power_raw = -movement_y-movement_turn+movement_x*1.5;
+
 
 
 

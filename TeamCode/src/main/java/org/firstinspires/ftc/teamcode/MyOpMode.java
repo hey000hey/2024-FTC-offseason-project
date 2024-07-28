@@ -90,8 +90,8 @@ public class MyOpMode extends LinearOpMode {
 //        );
 
         allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new CurvePoint(40, 10, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new CurvePoint(50, 50, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
 
 
         CurvePoint secondLastPoint = allPoints.get(allPoints.size() - 2);
