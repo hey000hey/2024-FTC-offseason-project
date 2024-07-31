@@ -24,13 +24,23 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class RobotMovement {
 
-
-    public static double followCurve(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints, double followAngle, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive) {
+    public static int LineThatIsBeingFollowedRightNow = 0;
+    public static void followCurve(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints, double followAngle, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive) {
         CurvePoint followMe = getFollowPointPath(allPoints, new Point(MyOpMode.BotXPosition,MyOpMode.BotYPosition), allPoints.get(0).followDistance);
-// checks if the bot is very close to the last point
-//        if(!((MyOpMode.BotXPosition - allPoints.get(allPoints.size() - 2).x) < 0.1) || !((MyOpMode.BotYPosition - allPoints.get(allPoints.size() - 2).y) < 0.1)) {
-            return goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed, LeftFrontDrive, RightFrontDrive, LeftBackDrive, RightBackDrive);
-//        } else return 0;
+
+        //check if second to last point reached
+        // telemetry.addData("LineThatIsBeingFollowedRightNow: ", LineThatIsBeingFollowedRightNow);
+        if (!(LineThatIsBeingFollowedRightNow == (allPoints.size() - 1))) {
+            goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed, LeftFrontDrive, RightFrontDrive, LeftBackDrive, RightBackDrive);
+        }
+        else {
+            // stop the robot if second to last point
+            LeftFrontDrive.setPower(0);
+            LeftBackDrive.setPower(0);
+            RightFrontDrive.setPower(0);
+            RightBackDrive.setPower(0);
+        }
+
     }
 
     public static CurvePoint getFollowPointPath(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> pathPoints, Point robotLocation, double followRadius) {
@@ -52,30 +62,23 @@ public class RobotMovement {
 
             double closestAngle = 100000000;
 
+            double deltaAngle = 0;
             for(Point thisIntersection : intersections) {
                 double angle = Math.atan2(thisIntersection.y - MyOpMode.BotYPosition, thisIntersection.x - MyOpMode.BotXPosition);
-                double deltaAngle = Math.abs(MathFunctions.AngleWrap(angle - MyOpMode.BotHeading));
-                System.out.println("Delta angle " + deltaAngle);
-                System.out.println("deltaAngle");
-
+                deltaAngle = Math.abs(MathFunctions.AngleWrap(angle - MyOpMode.BotHeading));
                 if(deltaAngle < closestAngle) {
                     closestAngle = deltaAngle;
                     followMe.setPoint(thisIntersection);
+                    followMe.moveSpeed = pathPoints.get(i+1).moveSpeed;
+                    LineThatIsBeingFollowedRightNow = i+1;
                 }
-//                System.out.println("allPoints: " + allPoints);
-//                lastPoint = pathPoints.get(pathPoints.size() -1);
-//                double lastSlope = (intersections.get(intersections.size() -1) - intersections.get(intersections.size() -1))
             }
-            System.out.println(intersections);
-//            System.out.println("Current line: " + i + " Current closest delta angle: " + closestAngle);
         }
         return followMe;
     }
 
 
     public static double goToPosition (double x, double Y, double movementSpeed, double preferredAngle, double turnSpeed, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive) {
-
-
 
         //calculates the relative X and Y the bot has to move
         double distanceToTarget = Math.hypot(Y-MyOpMode.BotYPosition, x-MyOpMode.BotXPosition);

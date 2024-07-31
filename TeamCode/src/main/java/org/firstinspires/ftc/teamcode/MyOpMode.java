@@ -64,8 +64,7 @@ public class MyOpMode extends LinearOpMode {
     ArrayList<CurvePoint> allPoints = new ArrayList<>();
     @Override
     public void runOpMode() throws InterruptedException {
-        IMU imu;
-        imu = hardwareMap.get(IMU.class, "imu");
+        IMU imu = hardwareMap.get(IMU.class, "imu");
 
         TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(hardwareMap, imu, 0.0005752428, 0.0005752428);
 
@@ -83,43 +82,9 @@ public class MyOpMode extends LinearOpMode {
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//        DifferentialOdometry diffOdom = new DifferentialOdometry(
-//                () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
-//                () -> encoderRight.getCurrentPosition() * TICKS_TO_INCHES,
-//                TRACKWIDTH
-//        );
-
         allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
         allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
         allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
-
-
-        CurvePoint secondLastPoint = allPoints.get(allPoints.size() - 2);
-        CurvePoint lastPoint = allPoints.get(allPoints.size() - 1);
-        double m = (lastPoint.y - secondLastPoint.y) / (lastPoint.x - secondLastPoint.x);
-
-        CurvePoint extend = lastPoint;
-        if ((secondLastPoint.x - lastPoint.x) < 0) {
-            extend.x += 30;
-            extend.y += ((m * extend.x) + (m * lastPoint.x));
-        } else if ((secondLastPoint.x - lastPoint.x) > 0 ) {
-            extend.x -= 30;
-            extend.y += ((m * extend.x) + (m * lastPoint.x));
-        } else if ((secondLastPoint.y - lastPoint.y) < 0) {
-            extend.y += 30;
-        } else {
-            extend.y -= 30;
-        }
-
-        allPoints.add(extend);
-        // print the last point
-//        System.out.println("LAST POINT.x: " + allPoints.get(-1).x);
-//        System.out.println("LAST POINT.y: " + allPoints.get(-1).y);
-
-//        encoderLeft.encoder.reset();
-//        encoderRight.encoder.reset();
-
-//        diffOdom.updatePose(new Pose2d(1, 2, Rotation2d.fromDegrees(0)));
 
         waitForStart();
 
@@ -132,8 +97,6 @@ public class MyOpMode extends LinearOpMode {
 
 //        new Thread(() -> {
             while (opModeIsActive() && !isStopRequested()) {
-//                diffOdom.updatePose(); // update the position
-//                PositionTracker.robotPose = diffOdom.getPose();
                 BotXPosition = tdwl.getPose().position.x + 1;
                 BotYPosition = tdwl.getPose().position.y + 1;
                 BotHeading = tdwl.getPose().heading.toDouble();
