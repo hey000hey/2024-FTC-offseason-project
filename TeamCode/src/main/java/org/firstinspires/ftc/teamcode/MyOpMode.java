@@ -97,8 +97,8 @@ public class MyOpMode extends LinearOpMode {
 
 //        new Thread(() -> {
             while (opModeIsActive() && !isStopRequested()) {
-                BotXPosition = tdwl.getPose().position.x + 1;
-                BotYPosition = tdwl.getPose().position.y + 1;
+                BotXPosition = tdwl.getPose().position.x;
+                BotYPosition = tdwl.getPose().position.y;
                 BotHeading = tdwl.getPose().heading.toDouble();
                 telemetry.addData("X Position", df.format(BotXPosition));
                 telemetry.addData("Y Position",df.format(BotYPosition));
