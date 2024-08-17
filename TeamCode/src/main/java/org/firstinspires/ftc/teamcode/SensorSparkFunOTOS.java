@@ -192,11 +192,9 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         // multiple speeds to get an average, then set the linear scalar to the
         // inverse of the error. For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
-        myOtos.setLinearScalar(0.9971461836);
-        // 0.9972575418 slow 0.9955408068 fast
-        // 0.9955408068 slow 0.9987515605 fast
-        // 0.9963991743 average
-        myOtos.setAngularScalar(1.0001111235);
+        myOtos.setLinearScalar(0.983203605079885);
+        // 2.2 slow 0.6 fast
+        myOtos.setAngularScalar(1.000389040182293);
 
         // The IMU on the OTOS includes a gyroscope and accelerometer, which could
         // have an offset. Note that as of firmware version 1.0, the calibration
