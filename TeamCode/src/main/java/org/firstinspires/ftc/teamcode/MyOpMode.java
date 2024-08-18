@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint;
 import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.OpMode;
+import org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.RobotMovement;
 import org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer;
 
 import com.acmerobotics.dashboard.canvas.Rotation;
@@ -15,8 +16,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.RobotMovement.followCurve;
 //import static org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer.getPose;
+
+import static RobotUtilities.MovementVars.movement_turn;
 
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
@@ -66,7 +68,7 @@ public class MyOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         IMU imu = hardwareMap.get(IMU.class, "imu");
 
-        TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(hardwareMap, imu, 0.0005752428, 0.0005752428);
+        TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(hardwareMap, imu, 0.0029683465, 0.0029683465);
 
         System.out.println("Initializing MyOpMode...");
 
@@ -74,17 +76,21 @@ public class MyOpMode extends LinearOpMode {
 //        encoderLeft = new MotorEx(hardwareMap, "left_front"); // parallel
 //        encoderRight = new MotorEx(hardwareMap, "right_back");
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "fl");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "bl");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "fr");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "br");
 
-        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+//        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+//        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
-        allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(48, 0, 0.05, 1.0, 3, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(48, 48, 0.05, 1.0, 3, Math.toRadians(50), 1.0 ));
+        allPoints.add(new CurvePoint(0, 48, 0.05, 1.0, 3, Math.toRadians(50), 1.0 ));
+
+//        allPoints.add(new CurvePoint(20, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+//        allPoints.add(new CurvePoint(40, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
+//        allPoints.add(new CurvePoint(60, 0, 0.05, 1.0, 5, Math.toRadians(50), 1.0 ));
 
         waitForStart();
 
@@ -92,6 +98,7 @@ public class MyOpMode extends LinearOpMode {
 
         // Add main loop code here
         System.out.println("Initialized");
+        RobotMovement movement = new RobotMovement();
 
 
 
@@ -102,10 +109,15 @@ public class MyOpMode extends LinearOpMode {
                 BotHeading = tdwl.getPose().heading.toDouble();
                 telemetry.addData("X Position", df.format(BotXPosition));
                 telemetry.addData("Y Position",df.format(BotYPosition));
-                telemetry.addData("Heading", df.format(BotHeading));
+                telemetry.addData("Heading", df.format(Math.toDegrees(BotHeading)));
+                telemetry.addData("movement y power", movement.movementYPower);
+                telemetry.addData("movement turn", movement_turn);
+                telemetry.addData("movement X power", movement.movementXPower);
+                telemetry.addData("relative turn angle", movement.relativeTurnAngle);
                 telemetry.update();
 
-                followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
+
+                movement.followCurve(allPoints, 0, leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, telemetry);
 
 //                telemetry.addData ("relative turn angle: ", followCurve(allPoints, Math.toRadians(90), leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive));
 

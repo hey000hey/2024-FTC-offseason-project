@@ -24,14 +24,18 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class RobotMovement {
 
+    public double movementXPower = 0.001;
+    public double movementYPower = 0.001;
+    public double relativeTurnAngle;
+
     public static int LineThatIsBeingFollowedRightNow = 0;
-    public static void followCurve(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints, double followAngle, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive) {
+    public void followCurve(ArrayList<org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.CurvePoint> allPoints, double followAngle, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive, Telemetry telemetry) {
         CurvePoint followMe = getFollowPointPath(allPoints, new Point(MyOpMode.BotXPosition,MyOpMode.BotYPosition), allPoints.get(0).followDistance);
 
         //check if second to last point reached
         // telemetry.addData("LineThatIsBeingFollowedRightNow: ", LineThatIsBeingFollowedRightNow);
         if (!(LineThatIsBeingFollowedRightNow == (allPoints.size() - 1))) {
-            goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed, LeftFrontDrive, RightFrontDrive, LeftBackDrive, RightBackDrive);
+            goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed, LeftFrontDrive, RightFrontDrive, LeftBackDrive, RightBackDrive, telemetry);
         }
         else {
             // stop the robot if second to last point
@@ -78,21 +82,20 @@ public class RobotMovement {
     }
 
 
-    public static double goToPosition (double x, double Y, double movementSpeed, double preferredAngle, double turnSpeed, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive) {
+    public double goToPosition (double x, double Y, double movementSpeed, double preferredAngle, double turnSpeed, DcMotor LeftFrontDrive, DcMotor RightFrontDrive, DcMotor LeftBackDrive, DcMotor RightBackDrive, Telemetry telemetry) {
 
         //calculates the relative X and Y the bot has to move
         double distanceToTarget = Math.hypot(Y-MyOpMode.BotYPosition, x-MyOpMode.BotXPosition);
 
         double absoluteAngleToTarget = Math.atan2(Y-MyOpMode.BotYPosition, x-MyOpMode.BotXPosition);
-        double relativeAngleToPoint = AngleWrap(absoluteAngleToTarget - (MyOpMode.BotHeading - Math.toRadians(90)));
+        double relativeAngleToPoint = AngleWrap(absoluteAngleToTarget - (MyOpMode.BotHeading));
 
         double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
         double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
 
 
         // vedant/maxwell movement code
-        double movementXPower = 0.001;
-        double movementYPower = 0.001;
+
         movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
         movementYPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 //
@@ -102,23 +105,33 @@ public class RobotMovement {
 //        RightBackDrive.setPower(movementYPower);
 //
 //        ApplyMovement();
-        double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
+        relativeTurnAngle = relativeAngleToPoint + preferredAngle;
 
-        movement_turn = Range.clip(relativeTurnAngle/Math.toRadians(30), -1, 1) * turnSpeed;
+        movement_turn = Range.clip(relativeTurnAngle/5, -1, 1) * turnSpeed;
+//        movement_turn = relativeTurnAngle/Math.toRadians(30) * turnSpeed;
 
-//        double tl_power_raw = movementYPower-movement_turn+movementXPower*1.5;
-//        double bl_power_raw = movementYPower-movement_turn- movementXPower*1.5;
-//        double br_power_raw = -movementYPower-movement_turn-movementXPower*1.5;
-//        double tr_power_raw = -movementYPower-movement_turn+movementXPower*1.5;
+        double totalPower = Math.abs(movementXPower) + Math.abs(movementYPower) + Math.abs(movement_turn);
+        totalPower = Math.min(totalPower, 1);
+        if (totalPower < 1) {
+            totalPower = 1;
+        }
+        movementXPower /= totalPower;
+        movementYPower /= totalPower;
+        movement_turn /= totalPower;
 
-        double tl_power_raw = movementYPower-movement_turn+movementXPower;
-        double bl_power_raw = movementYPower-movement_turn- movementXPower;
-        double br_power_raw = -movementYPower-movement_turn-movementXPower;
-        double tr_power_raw = -movementYPower-movement_turn+movementXPower;
+        // v2 from diff team
+//        double tl_power_raw = movementYPower+movement_turn+movementXPower;
+//        double bl_power_raw = movementYPower+movement_turn-movementXPower;
+//        double br_power_raw = -movementYPower-movement_turn-movementXPower;
+//        double tr_power_raw = -movementYPower-movement_turn+movementXPower;
 
-       // telemetry.addData("movement y power", movementYPower);
-        //telemetry.addData("movement turn", movement_turn);
-       // telemetry.addData("movement X power", movementXPower);
+        // og gluten free
+        double tl_power_raw = movementYPower-(movement_turn)-movementXPower;
+        double bl_power_raw = -movementYPower-(movement_turn)-movementXPower;
+        double br_power_raw = -movementYPower-(movement_turn)+movementXPower;
+        double tr_power_raw = movementYPower-(movement_turn)+movementXPower;
+
+
 
 //        telemetry.update();
 

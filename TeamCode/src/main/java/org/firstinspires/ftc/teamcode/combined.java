@@ -29,8 +29,7 @@ import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.teamcode.TutorialSeries.Tutorial.src.treamcode.RobotMovement.followCurve;
+
 
 import android.util.Log;
 
