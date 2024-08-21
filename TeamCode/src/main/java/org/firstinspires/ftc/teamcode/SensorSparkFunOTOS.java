@@ -7,17 +7,13 @@ package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.hardware.sparkfun.SparkFunOTOS.*;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.localization.TwoDeadWheelLocalizer;
@@ -43,8 +39,14 @@ public class SensorSparkFunOTOS extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+    // FTC Dashboard instance
+    private FtcDashboard dashboard;
+
     @Override
     public void runOpMode() throws InterruptedException {
+        // Initialize the FTC Dashboard
+        dashboard = FtcDashboard.getInstance();
+
         // Get a reference to the sensor
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "fl");
@@ -111,8 +113,8 @@ public class SensorSparkFunOTOS extends LinearOpMode {
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
-            // Get the latest position, which includes the x and y coordinates, plus the
-            // heading angle
+
+            // Get the latest position, which includes the x and y coordinates, plus the heading angle
             Pose2D pos = myOtos.getPosition();
 
             // Reset the tracking if the user requests it
@@ -146,7 +148,24 @@ public class SensorSparkFunOTOS extends LinearOpMode {
 
             // Update the telemetry on the driver station
             telemetry.update();
+
+            // Send telemetry data to the FTC Dashboard
+            sendTelemetryToDashboard(pos, leftFrontPower, rightFrontPower, leftBackPower, rightBackPower, tdwl);
         }
+    }
+
+    private void sendTelemetryToDashboard(Pose2D pos, double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower, TwoDeadWheelLocalizer tdwl) {
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("X coordinate", pos.x);
+        packet.put("Y coordinate", pos.y);
+        packet.put("Heading angle", pos.h);
+        packet.put("Front left/Right", String.format("%4.2f, %4.2f", leftFrontPower, rightFrontPower));
+        packet.put("Back  left/Right", String.format("%4.2f, %4.2f", leftBackPower, rightBackPower));
+        packet.put("ODOM X coordinate", tdwl.getPose().position.x);
+        packet.put("ODOM Y coordinate", tdwl.getPose().position.y);
+        packet.put("ODOM Heading angle", tdwl.getPose().heading.toDouble());
+
+        dashboard.sendTelemetryPacket(packet);
     }
 
     private void configureOtos() {
