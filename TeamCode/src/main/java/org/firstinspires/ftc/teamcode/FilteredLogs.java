@@ -11,8 +11,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name = "Filtered RobotCore Logs", group = "Examples")
-public class FilteredRobotCoreLogsOpMode extends LinearOpMode {
+@TeleOp(name = "Filtered Logs", group = "Examples")
+public class FilteredLogs extends LinearOpMode {
 
     private FtcDashboard dashboard;
     private Process logcatProcess;
