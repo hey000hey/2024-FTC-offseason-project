@@ -73,7 +73,7 @@ public class SensorSparkFunOTOS extends LinearOpMode {
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
 
-        TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(hardwareMap, imu, 0.0029683465, 0.0029683465);
+        TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(hardwareMap, imu, 0.0019788977, 0.0019788977);
 
         // Wait for the start button to be pressed
         waitForStart();
@@ -194,7 +194,9 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         // clockwise (negative rotation) from the robot's orientation, the offset
         // would be {-5, 10, -90}. These can be any value, even the angle can be
         // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
-        Pose2D offset = new Pose2D(-2.3, 8.45, 0);
+        // 0.4 inches back
+        //
+        Pose2D offset = new Pose2D(1.97, -0.4, 0);
         myOtos.setOffset(offset);
 
         // Here we can set the linear and angular scalars, which can compensate for
@@ -213,9 +215,12 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         // multiple speeds to get an average, then set the linear scalar to the
         // inverse of the error. For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
-        myOtos.setLinearScalar(1.011804384485666);
-        // 2.2 slow 0.6 fast
-        myOtos.setAngularScalar(1.000555864369094);
+        myOtos.setLinearScalar(1.0132689014);
+        // 95.18 slow 94.60 fast 94.496 fast 95.34
+        myOtos.setAngularScalar(0.9884294728);
+        // -39.765, -40.33, -39.375
+        // -3.65, -3.87, -2.5
+        // 0.3818,00018,000
 
         // The IMU on the OTOS includes a gyroscope and accelerometer, which could
         // have an offset. Note that as of firmware version 1.0, the calibration
