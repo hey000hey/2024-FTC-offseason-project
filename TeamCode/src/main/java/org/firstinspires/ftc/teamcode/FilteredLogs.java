@@ -71,7 +71,9 @@ public class FilteredLogs extends LinearOpMode {
     private void sendLogsToDashboard(List<String> logs) {
         TelemetryPacket packet = new TelemetryPacket();
         for (int i = 0; i < logs.size(); i++) {
+
             packet.put("Log Entry " + i, logs.get(i));
+            dashboard.sendTelemetryPacket(packet);
         }
         dashboard.sendTelemetryPacket(packet);
 
