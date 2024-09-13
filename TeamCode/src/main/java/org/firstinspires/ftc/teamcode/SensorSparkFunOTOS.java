@@ -9,6 +9,7 @@ import static com.qualcomm.hardware.sparkfun.SparkFunOTOS.*;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -72,6 +73,11 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         telemetry.update();
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+// Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+        imu.initialize(parameters);
 
         TwoDeadWheelLocalizer tdwl = new TwoDeadWheelLocalizer(hardwareMap, imu, 0.0019788977, 0.0019788977);
 
@@ -144,7 +150,7 @@ public class SensorSparkFunOTOS extends LinearOpMode {
             telemetry.addLine("ODOM");
             telemetry.addData("X coordinate", tdwl.getPose().position.x);
             telemetry.addData("Y coordinate", tdwl.getPose().position.y);
-            telemetry.addData("Heading angle", tdwl.getPose().heading.toDouble());
+            telemetry.addData("Heading angle", Math.toDegrees(tdwl.getPose().heading.toDouble()));
 
             // Update the telemetry on the driver station
             telemetry.update();
